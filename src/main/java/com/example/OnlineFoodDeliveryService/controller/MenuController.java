@@ -2,6 +2,7 @@ package com.example.OnlineFoodDeliveryService.controller;
 
 
 import com.example.OnlineFoodDeliveryService.dto.request.MenuItemRequest;
+import com.example.OnlineFoodDeliveryService.dto.response.MenuItemResponse;
 import com.example.OnlineFoodDeliveryService.exceptions.ResourceNotFoundException;
 import com.example.OnlineFoodDeliveryService.service.MenuCardService;
 import com.example.OnlineFoodDeliveryService.service.MenuItemService;
@@ -9,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -38,4 +41,16 @@ public class MenuController {
             return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
         }
     }
+
+
+    @GetMapping("/{menuCardId}/menu-items")
+    public ResponseEntity<?> getMenuItemsByMenuCardId(@PathVariable int menuCardId){
+        try{
+            List<MenuItemResponse> menuItemResponseList=menuItemService.getMenuItemsByMenuCardId(menuCardId);
+            return ResponseEntity.ok().body(menuItemResponseList);
+        }catch (ResourceNotFoundException ex){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+        }
+    }
+
 }

@@ -1,15 +1,14 @@
 package com.example.OnlineFoodDeliveryService.controller;
 
 
+import com.example.OnlineFoodDeliveryService.dto.request.MenuItemRequest;
 import com.example.OnlineFoodDeliveryService.exceptions.ResourceNotFoundException;
 import com.example.OnlineFoodDeliveryService.service.MenuCardService;
+import com.example.OnlineFoodDeliveryService.service.MenuItemService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -17,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class MenuController {
 
     private final MenuCardService menuCardService;
-
+    private  final MenuItemService menuItemService;
     @PostMapping("/menucard")
     public ResponseEntity<String> addMenuCard(@RequestParam String restrauntGmail){
         try{
@@ -27,6 +26,16 @@ public class MenuController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
         }catch (IllegalStateException ex){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+        }
+    }
+
+    @PostMapping("/menu-item")
+    public  ResponseEntity<String> addMenuItem(@RequestBody MenuItemRequest menuItemRequest){
+        try{
+            String res=menuItemService.addMenuItem(menuItemRequest);
+            return ResponseEntity.ok().body(res);
+        }catch (ResourceNotFoundException ex){
+            return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
         }
     }
 }

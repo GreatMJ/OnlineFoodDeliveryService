@@ -24,4 +24,10 @@ public class MenuCard {
 
     @OneToMany(mappedBy = "menuCard",cascade = CascadeType.ALL)
     List<MenuItem> menuItemList;
+
+    // method to add menuItem in menuItemList
+    public void addMenuItem(MenuItem menuItem){
+        menuItemList.add(menuItem);
+        menuItem.setMenuCard(this);   // set back reference
+    }
 }

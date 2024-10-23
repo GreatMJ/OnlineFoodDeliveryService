@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.List;
+
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -26,4 +28,7 @@ public class Customer {
     String gmail;
 
     String address;
+
+    @OneToMany(mappedBy = "customer",cascade = CascadeType.PERSIST)
+    List<Order> orderList;
 }

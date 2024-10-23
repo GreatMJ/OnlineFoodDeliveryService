@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.List;
+
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -31,4 +33,8 @@ public class Restraunt {
     @OneToOne(cascade = CascadeType.ALL)
             @JoinColumn(name = "menucard_id")
     MenuCard menuCard;
+
+    @OneToMany(mappedBy = "restraunt",cascade = CascadeType.PERSIST)
+    List<Order> orderList;
+
 }

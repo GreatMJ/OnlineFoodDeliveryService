@@ -53,4 +53,16 @@ public class MenuController {
         }
     }
 
+   @GetMapping("/{menuCardId}/menu-items/category/{category}")
+    public  ResponseEntity<?> getMenuItemsByCategory(@PathVariable int menuCardId,@PathVariable String category){
+        try{
+            List<MenuItemResponse> menuItemResponseList=menuCardService.getMenuItemsByCategory(menuCardId,category);
+            return ResponseEntity.ok().body(menuItemResponseList);
+        }catch (ResourceNotFoundException ex){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+        }catch (IllegalArgumentException ex){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+        }
+   }
+
 }

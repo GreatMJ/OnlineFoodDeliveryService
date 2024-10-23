@@ -2,12 +2,16 @@ package com.example.OnlineFoodDeliveryService.service;
 
 
 import com.example.OnlineFoodDeliveryService.dto.request.RestrauntRequest;
+import com.example.OnlineFoodDeliveryService.dto.response.RestrauntResponse;
 import com.example.OnlineFoodDeliveryService.exceptions.ResourceNotFoundException;
 import com.example.OnlineFoodDeliveryService.models.Restraunt;
 import com.example.OnlineFoodDeliveryService.repository.RestrauntRepository;
 import com.example.OnlineFoodDeliveryService.transformer.RestrauntTransformer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -42,7 +46,29 @@ public class RestrauntService {
         restrauntRepository.save(restraunt);
 
         return String.format("The rating for restaurant '%s' has been successfully updated to %.1f. Thank you for your feedback!", restraunt.getName(), rating);
+    }
 
 
+    // get restraunts with rating greater than X
+    public List<RestrauntResponse> findRestrauntsByRatingGreaterThan(float requiredRating){
+        // check if required rating  is in proper range
+        if(requiredRating<0||requiredRating>10) throw new IllegalArgumentException("Rating must be between 0 to 10. Provided rating: "+requiredRating);
+
+       // fetch restraunts
+        List<Restraunt>restrauntList=restrauntRepository.findRestrauntsWithRatingGreaterThan(requiredRating);
+
+        // if no restraunt available
+        if(restrauntList==null||restrauntList.isEmpty()) throw new ResourceNotFoundException("No restraunt found with rating greater than " + requiredRating +".");
+
+        // initialize list for response
+        List<RestrauntResponse>restrauntResponseList=new ArrayList<>(restrauntList.size());
+
+        // conver restraunt to dto response
+        for(Restraunt restraunt:restrauntList){
+            RestrauntResponse restrauntResponse=RestrauntTransformer.restrauntToRestrauntResponse(restraunt);
+            restrauntResponseList.add(restrauntResponse);
+        }
+
+        return restrauntResponseList;
     }
 }

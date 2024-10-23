@@ -1,6 +1,7 @@
 package com.example.OnlineFoodDeliveryService.transformer;
 
 import com.example.OnlineFoodDeliveryService.dto.request.RestrauntRequest;
+import com.example.OnlineFoodDeliveryService.dto.response.RestrauntResponse;
 import com.example.OnlineFoodDeliveryService.models.Restraunt;
 
 public class RestrauntTransformer {
@@ -13,5 +14,15 @@ public class RestrauntTransformer {
                 .gmail(restrauntRequest.getGmail())
                 .rating(restrauntRequest.getRating())
                         .build();
+    }
+
+    public static RestrauntResponse restrauntToRestrauntResponse(Restraunt restraunt){
+        return RestrauntResponse.builder()
+                .name(restraunt.getName())
+                .address(restraunt.getAddress())
+                .contactNo(restraunt.getContactNo())
+                .rating(restraunt.getRating())
+                .gmail(restraunt.getGmail())
+                                .build();
     }
 }

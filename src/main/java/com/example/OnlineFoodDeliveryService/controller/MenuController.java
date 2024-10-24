@@ -65,4 +65,14 @@ public class MenuController {
         }
    }
 
+   @DeleteMapping("/menu-card/{menuCardId}/menu-item/{menuItemId}")
+    public ResponseEntity<?> deleteMenuItemFromMenuCard(@PathVariable int menuCardId,@PathVariable int menuItemId){
+        try {
+            menuItemService.deleteMenuItemFromMenuCard(menuCardId,menuItemId);
+            return ResponseEntity.ok("Menuitem deleted successfully.");
+        }catch (ResourceNotFoundException ex){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+        }
+   }
+
 }

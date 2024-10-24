@@ -47,6 +47,22 @@ public class MenuItemService {
          menuItemResponseList.add(menuItemResponse);
      }
      return  menuItemResponseList;
+    }
+
+
+    // delete a menuitem from a menucard
+
+    public void deleteMenuItemFromMenuCard(int menuCardId,int menuItemId){
+
+        // first check menu card with given id exists or not
+       boolean present= menuCardRepository.existsById(menuCardId);
+       if(!present) throw new ResourceNotFoundException("Menucard with id: "+ menuCardId+" not found.");
+
+       // get menuitem if not found throw error with proper message
+       MenuItem menuItem=menuItemRepository.getMenuItemFromMenuCardById(menuCardId,menuItemId).orElseThrow(()->new ResourceNotFoundException(String.format("MenuItem with id %s does not exist in menucard with id %s. Please verify ids and try again.",menuItemId,menuCardId)));
+
+       menuItemRepository.delete(menuItem);
+       return;
 
 
     }

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -70,5 +71,17 @@ public class RestrauntService {
         }
 
         return restrauntResponseList;
+    }
+
+
+    // delete a restraunt by id
+
+    public void deleteRestrauntById(int id){
+       Restraunt restraunt=restrauntRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("Restraunt not found with id: "+id+"."));
+
+       restrauntRepository.delete(restraunt);
+
+       return;
+
     }
 }

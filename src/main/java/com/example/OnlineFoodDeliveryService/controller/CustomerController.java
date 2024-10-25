@@ -17,22 +17,18 @@ public class CustomerController {
 
     @PostMapping
     public ResponseEntity<String> addCustomer(@RequestBody CustomerRequest customerRequest){
-       try{
+
            String res=customerService.addCustomer(customerRequest);
            return new ResponseEntity<>(res,
                                        HttpStatus.CREATED);
-       }catch (RuntimeException ex){
-           return  new ResponseEntity<>(ex.getMessage(),HttpStatus.BAD_REQUEST);
-       }
+
     }
 
     @DeleteMapping
     public ResponseEntity<String> deleteCustomer(@RequestParam String gmail){
-        try{
+
             String res=customerService.deleteCustomer(gmail);
-            return new ResponseEntity<>(res,HttpStatus.OK);
-        }catch (ResourceNotFoundException ex){
-            return new ResponseEntity<>(ex.getMessage(),HttpStatus.NOT_FOUND);
-        }
+            return ResponseEntity.ok(res);
+
     }
 }

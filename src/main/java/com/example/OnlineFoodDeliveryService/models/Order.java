@@ -31,7 +31,7 @@ public class Order {
     @JoinColumn(name = "restraunt_id",nullable = false)
     Restraunt restraunt;
 
-    LocalDateTime dateAndTime;
+    LocalDateTime orderTime;
 
     Float amount;
 

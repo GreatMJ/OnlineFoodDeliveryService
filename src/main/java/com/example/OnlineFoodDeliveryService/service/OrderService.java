@@ -1,8 +1,19 @@
 package com.example.OnlineFoodDeliveryService.service;
 
-import com.example.OnlineFoodDeliveryService.repository.OrderRepository;
+import com.example.OnlineFoodDeliveryService.dto.request.OrderRequest;
+import com.example.OnlineFoodDeliveryService.dto.request.OrderedItemRequest;
+import com.example.OnlineFoodDeliveryService.dto.response.OrderResponse;
+import com.example.OnlineFoodDeliveryService.enums.OrderStatus;
+import com.example.OnlineFoodDeliveryService.exceptions.ResourceNotFoundException;
+import com.example.OnlineFoodDeliveryService.models.*;
+import com.example.OnlineFoodDeliveryService.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -10,7 +21,76 @@ public class OrderService {
 
 
     private final OrderRepository orderRepository;
+    private final CustomerRepository customerRepository;
+    private  final RestrauntRepository restrauntRepository;
+    private final MenuItemRepository menuItemRepository;
+    private final MenuCardRepository menuCardRepository;
 
+   // method to place the order
 
+  public String placeoOrder(OrderRequest orderRequest){
+      // fetch the customer
+      Customer customer=customerRepository.findById(orderRequest.getCustomerId()).orElseThrow(()->new ResourceNotFoundException(String.format("Customer with id: %d not found. Verify id and try again.",orderRequest.getCustomerId())));
+
+      // fetch restraunt
+      Restraunt restraunt=restrauntRepository.findById(orderRequest.getRestrauntId()).orElseThrow(()->new ResourceNotFoundException(String.format("Restraunt with id: %d not found. Verify id and try again.",orderRequest.getRestrauntId())));
+      String restrauntName=restraunt.getName();
+      // fetch menu card
+      MenuCard menuCard=restraunt.getMenuCard();
+      int menuCardId=menuCard.getId();
+
+      // create order
+      Order order=new Order();
+      // create list of order items
+      List<OrderItem> orderItemList=createOrderItemList(orderRequest.getOrderedItems(),menuCardId,order,restrauntName);
+
+      // set the properties
+      order.setCustomer(customer);
+      order.setRestraunt(restraunt);
+      order.setOrderStatus(OrderStatus.CONFIRMED);
+      order.setOrderTime(LocalDateTime.now());
+      order.setAddress(customer.getAddress());
+      order.setAmount(calculateTotalAmount(orderItemList));
+      order.setOrderItemList(orderItemList);
+
+      // save the order
+      orderRepository.save(order);
+
+      return "Order placed successfully!";
+  }
+
+// helper method to create list of order items
+  private List<OrderItem> createOrderItemList(List<OrderedItemRequest> orderedItemRequestList,int menuCardId,Order order,String restrauntName){
+      List<OrderItem> orderItemList=new ArrayList<>();
+
+            for(OrderedItemRequest orderedItemRequest:orderedItemRequestList){
+                // fetch menu item
+          int menuItemId=orderedItemRequest.getMenuItemId();
+          MenuItem menuItem=menuItemRepository.getMenuItemFromMenuCardById(menuCardId,menuItemId).orElseThrow(()->new ResourceNotFoundException(String.format("MenuItem with id: %s not found in menucard of %s.",menuItemId,restrauntName)));
+          // create order item
+          OrderItem orderItem=new OrderItem();
+          orderItem.setName(menuItem.getName());
+          orderItem.setQuantity(orderedItemRequest.getQuantity());
+          orderItem.setPrice(menuItem.getPrice()*orderedItemRequest.getQuantity());
+          orderItem.setOrder(order);
+
+          // add order in list
+                orderItemList.add(orderItem);
+      }
+
+            // return the list;
+      return orderItemList;
+  }
+
+  // helper method to calculate total amount of the order
+    public float calculateTotalAmount(List<OrderItem> orderItemList){
+      float totalAmount=0;
+
+      for(OrderItem orderItem:orderItemList){
+          totalAmount+=orderItem.getPrice();
+      }
+
+      return totalAmount;
+    }
 
 }

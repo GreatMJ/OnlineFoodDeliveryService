@@ -22,57 +22,43 @@ public class MenuController {
     private  final MenuItemService menuItemService;
     @PostMapping("/menucard")
     public ResponseEntity<String> addMenuCard(@RequestParam String restrauntGmail){
-        try{
+
             String res= menuCardService.addMenuCard(restrauntGmail);
-            return ResponseEntity.ok().body(res);
-        }catch (ResourceNotFoundException ex){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
-        }catch (IllegalStateException ex){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
-        }
+            return ResponseEntity.ok(res);
+
     }
 
     @PostMapping("/menu-item")
     public  ResponseEntity<String> addMenuItem(@RequestBody MenuItemRequest menuItemRequest){
-        try{
+
             String res=menuItemService.addMenuItem(menuItemRequest);
-            return ResponseEntity.ok().body(res);
-        }catch (ResourceNotFoundException ex){
-            return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
-        }
+            return ResponseEntity.ok(res);
+
     }
 
 
     @GetMapping("/{menuCardId}/menu-items")
-    public ResponseEntity<?> getMenuItemsByMenuCardId(@PathVariable int menuCardId){
-        try{
+    public ResponseEntity<List<MenuItemResponse>> getMenuItemsByMenuCardId(@PathVariable int menuCardId){
+
             List<MenuItemResponse> menuItemResponseList=menuItemService.getMenuItemsByMenuCardId(menuCardId);
-            return ResponseEntity.ok().body(menuItemResponseList);
-        }catch (ResourceNotFoundException ex){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
-        }
+            return ResponseEntity.ok(menuItemResponseList);
+
     }
 
    @GetMapping("/{menuCardId}/menu-items/category/{category}")
-    public  ResponseEntity<?> getMenuItemsByCategory(@PathVariable int menuCardId,@PathVariable String category){
-        try{
+    public  ResponseEntity<   List<MenuItemResponse>> getMenuItemsByCategory(@PathVariable int menuCardId,@PathVariable String category){
+
             List<MenuItemResponse> menuItemResponseList=menuCardService.getMenuItemsByCategory(menuCardId,category);
-            return ResponseEntity.ok().body(menuItemResponseList);
-        }catch (ResourceNotFoundException ex){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
-        }catch (IllegalArgumentException ex){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
-        }
+            return ResponseEntity.ok(menuItemResponseList);
+
    }
 
    @DeleteMapping("/menu-card/{menuCardId}/menu-item/{menuItemId}")
-    public ResponseEntity<?> deleteMenuItemFromMenuCard(@PathVariable int menuCardId,@PathVariable int menuItemId){
-        try {
+    public ResponseEntity<String> deleteMenuItemFromMenuCard(@PathVariable int menuCardId,@PathVariable int menuItemId){
+
             menuItemService.deleteMenuItemFromMenuCard(menuCardId,menuItemId);
             return ResponseEntity.ok("Menuitem deleted successfully.");
-        }catch (ResourceNotFoundException ex){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
-        }
+
    }
 
 }

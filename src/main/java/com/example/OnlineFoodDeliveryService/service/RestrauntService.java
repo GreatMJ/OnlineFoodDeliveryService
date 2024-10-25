@@ -24,7 +24,7 @@ public class RestrauntService {
 
         Restraunt restraunt=restrauntRepository.findByGmail(restrauntRequest.getGmail());
 
-        if(restraunt!=null) throw new RuntimeException(String.format("The email '%s' is already registered with another restaurant. Please use a different email.",restrauntRequest.getGmail()));
+        if(restraunt!=null) throw new IllegalArgumentException(String.format("The email '%s' is already registered with another restaurant. Please use a different email.",restrauntRequest.getGmail()));
 
         restraunt= RestrauntTransformer.restrauntRequestToRestruant(restrauntRequest);
         restrauntRepository.save(restraunt);

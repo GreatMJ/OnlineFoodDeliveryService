@@ -21,7 +21,7 @@ public class CustomerService {
         // check if any user with provided gmail already exist or not
         Customer customer=customerRepository.findByGmail(customerRequest.getGmail());
 
-        if(customer!=null) throw new RuntimeException(String.format("%s is already associated with someone else.",customerRequest.getGmail()));
+        if(customer!=null) throw new IllegalArgumentException(String.format("%s is already associated with someone else.",customerRequest.getGmail()));
 
         customer= CustomerTransformer.CustomerRequestToCustomer(customerRequest);
         customerRepository.save(customer);

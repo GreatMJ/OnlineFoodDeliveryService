@@ -2,14 +2,14 @@ package com.example.OnlineFoodDeliveryService.controller;
 
 
 import com.example.OnlineFoodDeliveryService.dto.request.OrderRequest;
+import com.example.OnlineFoodDeliveryService.dto.response.OrderResponse;
 import com.example.OnlineFoodDeliveryService.service.OrderItemService;
 import com.example.OnlineFoodDeliveryService.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,4 +24,17 @@ public class OrderController {
         String res=orderService.placeoOrder(orderRequest);
         return ResponseEntity.ok(res);
     }
+
+    @GetMapping("/{id}")
+    public  ResponseEntity<OrderResponse> getOrderById(@PathVariable UUID id){
+        OrderResponse orderResponse=orderService.getOrderById(id);
+        return ResponseEntity.ok(orderResponse);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteOrderById(@PathVariable UUID id){
+        String res= orderService.deleteOrderById(id);
+        return ResponseEntity.ok(res);
+    }
+
 }

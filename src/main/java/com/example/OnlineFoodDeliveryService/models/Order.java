@@ -21,7 +21,8 @@ public class Order {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    UUID id;
+
+  UUID id;
 
     @ManyToOne
     @JoinColumn(name = "customer_id",nullable = false)

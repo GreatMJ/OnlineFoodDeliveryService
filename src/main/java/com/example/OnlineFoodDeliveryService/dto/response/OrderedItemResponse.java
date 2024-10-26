@@ -11,4 +11,5 @@ import lombok.experimental.FieldDefaults;
 public class OrderedItemResponse {
     String name;
     int quantity;
+    float price;
 }

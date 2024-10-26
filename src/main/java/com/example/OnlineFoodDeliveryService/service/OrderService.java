@@ -3,10 +3,13 @@ package com.example.OnlineFoodDeliveryService.service;
 import com.example.OnlineFoodDeliveryService.dto.request.OrderRequest;
 import com.example.OnlineFoodDeliveryService.dto.request.OrderedItemRequest;
 import com.example.OnlineFoodDeliveryService.dto.response.OrderResponse;
+import com.example.OnlineFoodDeliveryService.dto.response.OrderedItemResponse;
 import com.example.OnlineFoodDeliveryService.enums.OrderStatus;
 import com.example.OnlineFoodDeliveryService.exceptions.ResourceNotFoundException;
 import com.example.OnlineFoodDeliveryService.models.*;
 import com.example.OnlineFoodDeliveryService.repository.*;
+import com.example.OnlineFoodDeliveryService.transformer.OrderItemTransformer;
+import com.example.OnlineFoodDeliveryService.transformer.OrderTransformer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +17,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -95,5 +99,46 @@ public class OrderService {
 
 
 
+    // method to get order by id
+
+    public OrderResponse getOrderById(UUID id){
+      // fetch the order from repository
+        Order order=orderRepository.findById(id).orElseThrow(()->new ResourceNotFoundException(String.format("Order with id: %s not found.",id)));
+
+        // create orderItemResponseList
+        List<OrderedItemResponse> orderedItemResponseList=createOrderItemResponseList(order.getOrderItemList());
+
+        // convert order to order response dto
+        OrderResponse orderResponse=OrderTransformer.orderToOrderResponse(order,orderedItemResponseList);
+
+        return orderResponse;
+
+    }
+
+
+    // helper method to create orderItemResponse's list from orderItem list
+
+    private List<OrderedItemResponse> createOrderItemResponseList(List<OrderItem> orderItemList){
+      List<OrderedItemResponse> orderedItemResponseList=new ArrayList<>();
+
+      for(OrderItem orderItem:orderItemList){
+          // convert orderItem to orderItemResponse
+          OrderedItemResponse orderedItemResponse= OrderItemTransformer.orderItemToOrderItemResponse(orderItem);
+          orderedItemResponseList.add(orderedItemResponse);
+      }
+
+      return orderedItemResponseList;
+    }
+
+
+    // method to delete order by id
+
+    public String deleteOrderById(UUID id){
+      // fetch the order
+      Order order=orderRepository.findById(id).orElseThrow(()->new ResourceNotFoundException(String.format("Order with id: %s not found",id)));
+      // delete the order
+        orderRepository.delete(order);
+        return "Order deleted";
+    }
 
 }

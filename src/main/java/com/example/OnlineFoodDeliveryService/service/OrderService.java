@@ -14,10 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -141,4 +138,25 @@ public class OrderService {
         return "Order deleted";
     }
 
+
+    // method to get all orders placed by specific customer
+    public List<OrderResponse> getCustomerOrders(int id){
+      // fetch the customer
+        Customer customer=customerRepository.findById(id).orElseThrow(()->new ResourceNotFoundException(String.format("Customer with id: %s not found.",id)));
+        // fetch the orders
+        List<Order> orders=customer.getOrderList();
+        if(orders==null||orders.isEmpty()) return Collections.emptyList();
+        // initialize the list for orderResponse
+        List<OrderResponse> orderResponseList=new ArrayList<>();
+        //conver all orders to order response list;
+        for(Order order:orders){
+            // first create orderItemResponseList
+            List<OrderedItemResponse> orderedItemResponseList=createOrderItemResponseList(order.getOrderItemList());
+            // using transformer convert order to orderResponse
+            OrderResponse orderResponse=OrderTransformer.orderToOrderResponse(order,orderedItemResponseList);
+            orderResponseList.add(orderResponse);
+        }
+
+        return orderResponseList;
+    }
 }

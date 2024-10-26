@@ -8,7 +8,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @Data
@@ -18,7 +20,9 @@ public class OrderResponse {
 
     String restrauntName;
     String customerName;
-    LocalDateTime orderTime;
+    LocalDate orderDate;
+    LocalTime orderTime;
+
     float totalAmount;
     String address;
     @Enumerated(EnumType.STRING)

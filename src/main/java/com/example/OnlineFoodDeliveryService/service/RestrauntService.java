@@ -2,8 +2,10 @@ package com.example.OnlineFoodDeliveryService.service;
 
 
 import com.example.OnlineFoodDeliveryService.dto.request.RestrauntRequest;
+import com.example.OnlineFoodDeliveryService.dto.response.MenuItemResponse;
 import com.example.OnlineFoodDeliveryService.dto.response.RestrauntResponse;
 import com.example.OnlineFoodDeliveryService.exceptions.ResourceNotFoundException;
+import com.example.OnlineFoodDeliveryService.models.MenuCard;
 import com.example.OnlineFoodDeliveryService.models.Restraunt;
 import com.example.OnlineFoodDeliveryService.repository.RestrauntRepository;
 import com.example.OnlineFoodDeliveryService.transformer.RestrauntTransformer;
@@ -18,6 +20,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class RestrauntService {
     private final RestrauntRepository restrauntRepository;
+    private final MenuCardService menuCardService;
+    private final MenuItemService menuItemService;
 
     // add restraunt
     public String addRestruant(RestrauntRequest restrauntRequest){
@@ -82,6 +86,25 @@ public class RestrauntService {
        restrauntRepository.delete(restraunt);
 
        return;
+
+    }
+
+
+    // get all menu of a restraunt
+    public List<MenuItemResponse> getMenuOfRestrauntById(int id){
+        // fetch restraunt
+        Restraunt restraunt=restrauntRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException(String.format("Restraunt with id: %s not found.",id)));
+
+        // get menucard
+        MenuCard menuCard=restraunt.getMenuCard();
+        if(menuCard==null) throw new ResourceNotFoundException(String.format("Menucard of %s not found.",restraunt.getName()));
+
+        // get the list of menu items
+        List<MenuItemResponse> menuItemResponseList=menuItemService.getMenuItemsByMenuCardId(menuCard.getId());
+
+        return menuItemResponseList;
+
+
 
     }
 }

@@ -2,6 +2,7 @@ package com.example.OnlineFoodDeliveryService.controller;
 
 
 import com.example.OnlineFoodDeliveryService.dto.request.RestrauntRequest;
+import com.example.OnlineFoodDeliveryService.dto.response.MenuItemResponse;
 import com.example.OnlineFoodDeliveryService.dto.response.RestrauntResponse;
 
 import com.example.OnlineFoodDeliveryService.service.RestrauntService;
@@ -52,4 +53,9 @@ public class RestrauntController {
     }
 
 
+    @GetMapping("/{id}/menu")
+    public ResponseEntity<List<MenuItemResponse>> getMenuOfRestruantById(@PathVariable int id){
+        List<MenuItemResponse> menuItemResponseList=restrauntService.getMenuOfRestrauntById(id);
+        return ResponseEntity.ok(menuItemResponseList);
+    }
 }

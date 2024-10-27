@@ -1,6 +1,7 @@
 package com.example.OnlineFoodDeliveryService.service;
 
 import com.example.OnlineFoodDeliveryService.dto.request.CustomerRequest;
+import com.example.OnlineFoodDeliveryService.dto.response.CustomerResponse;
 import com.example.OnlineFoodDeliveryService.exceptions.ResourceNotFoundException;
 import com.example.OnlineFoodDeliveryService.models.Customer;
 import com.example.OnlineFoodDeliveryService.repository.CustomerRepository;
@@ -40,6 +41,16 @@ public class CustomerService {
         customerRepository.delete(customer);
 
         return String.format("%s has removed from system database.",customer.getName());
+    }
+
+    // get customer
+    public CustomerResponse getCustomerById(int id){
+        // fetch customer
+        Customer customer =customerRepository.findById(id).orElseThrow(()->new ResourceNotFoundException(String.format("Customer with id: not found. Verify id and try again.",id)));
+
+        //conver to response dto
+        CustomerResponse customerResponse=CustomerTransformer.customerToCustomerResponse(customer);
+        return customerResponse;
     }
 
 }

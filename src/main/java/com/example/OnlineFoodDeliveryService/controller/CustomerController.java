@@ -1,6 +1,7 @@
 package com.example.OnlineFoodDeliveryService.controller;
 
 import com.example.OnlineFoodDeliveryService.dto.request.CustomerRequest;
+import com.example.OnlineFoodDeliveryService.dto.response.CustomerResponse;
 import com.example.OnlineFoodDeliveryService.dto.response.OrderResponse;
 import com.example.OnlineFoodDeliveryService.exceptions.ResourceNotFoundException;
 import com.example.OnlineFoodDeliveryService.service.CustomerService;
@@ -45,4 +46,12 @@ public class CustomerController {
 
         return ResponseEntity.ok(orderResponseList);
     }
+
+    @GetMapping("/{id}")
+    public  ResponseEntity<CustomerResponse> getCustomerById(@PathVariable int id){
+        CustomerResponse customerResponse=customerService.getCustomerById(id);
+        return ResponseEntity.ok(customerResponse);
+    }
+
+
 }

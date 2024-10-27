@@ -50,4 +50,6 @@ public class RestrauntController {
             return ResponseEntity.ok("Restraunt deleted successfully.");
 
     }
+
+
 }

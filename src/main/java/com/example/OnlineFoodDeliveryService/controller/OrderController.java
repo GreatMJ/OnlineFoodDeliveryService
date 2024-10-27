@@ -37,6 +37,12 @@ public class OrderController {
         return ResponseEntity.ok(res);
     }
 
+    @PatchMapping("/{id}/cancel")
+    public ResponseEntity<String> cancelOrderById(@PathVariable UUID id){
+        orderService.cancelOrderById(id);
+        return ResponseEntity.ok("Order got cancelled.");
+    }
+
 
 
 }

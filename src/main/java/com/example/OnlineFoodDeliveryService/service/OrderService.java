@@ -159,4 +159,16 @@ public class OrderService {
 
         return orderResponseList;
     }
+
+
+    // method to cancel the order
+    public void cancelOrderById(UUID id){
+      //fetch the order from repository
+      Order order=orderRepository.findById(id).orElseThrow(()->new ResourceNotFoundException(String.format("Order with id: %s not found.",id)));
+
+      // mark the order cancelled
+        order.setOrderStatus(OrderStatus.CANCELLED);
+        orderRepository.save(order);
+
+    }
 }

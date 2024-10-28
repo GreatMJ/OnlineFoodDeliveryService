@@ -21,6 +21,7 @@ public class DeliveryPerson {
 
     String name;
 
+    @Column(unique = true)
     String contactNo;
     String gmail;
 

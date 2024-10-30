@@ -45,7 +45,7 @@ public class Order {
     @OneToMany(mappedBy = "order",cascade = CascadeType.ALL)
     List<OrderItem> orderItemList;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.PERSIST)
             @JoinColumn(name = "delivery_id")
     Delivery delivery;
 }

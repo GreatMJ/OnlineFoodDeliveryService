@@ -34,5 +34,8 @@ public class DeliveryPerson {
     List<Delivery> deliveryList;
 
     int deliveriesCompleted;
-    float rating;
+
+    long ratingSum;
+    long ratingCount;
+    float averageRating;
 }

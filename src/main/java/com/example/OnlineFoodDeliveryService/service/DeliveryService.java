@@ -1,6 +1,7 @@
 package com.example.OnlineFoodDeliveryService.service;
 
 import com.example.OnlineFoodDeliveryService.enums.DeliveryPersonStatus;
+import com.example.OnlineFoodDeliveryService.enums.DeliveryStatus;
 import com.example.OnlineFoodDeliveryService.enums.OrderStatus;
 import com.example.OnlineFoodDeliveryService.exceptions.ResourceNotFoundException;
 import com.example.OnlineFoodDeliveryService.models.Delivery;
@@ -22,8 +23,9 @@ public class DeliveryService {
     private  final DeliveryRepository deliveryRepository;
     private  final OrderRepository orderRepository;
     private  final DeliveryPersonRepository deliveryPersonRepository;
-    // create the delivery
 
+
+    // create the delivery
     public void createDeliveryForOrderById(UUID id){
         // fetch the order
         Order order=orderRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("Order not found."));
@@ -43,5 +45,31 @@ public class DeliveryService {
       //  deliveryRepository.save(delivery);
       orderRepository.save(order);  // parent enitity so enough to save only order
     }
+
+    // update delivery status
+    public void updateDeliveryStatus(UUID deliveryId, DeliveryStatus newStatus) {
+        // Fetch delivery
+        Delivery delivery = deliveryRepository.findById(deliveryId)
+                                              .orElseThrow(() -> new ResourceNotFoundException("Delivery not found."));
+
+        DeliveryStatus currentStatus = delivery.getDeliveryStatus();
+
+        // Check if current status is PENDING and new status is EN_ROUTE
+        if (currentStatus.equals(DeliveryStatus.PENDING) && newStatus.equals(DeliveryStatus.EN_ROUTE)) {
+            // Check if conditions are met to update
+            if (delivery.getDeliveryPerson() == null) {
+                throw new IllegalStateException("Cannot update to " + newStatus + ". Conditions not met.");
+            }
+
+            // Update the status
+            delivery.setDeliveryStatus(newStatus);
+            deliveryRepository.save(delivery);
+        } else if (currentStatus.equals(DeliveryStatus.EN_ROUTE)) {
+            throw new IllegalStateException("Delivery status already up to date. Delivery is " + currentStatus + ".");
+        } else {
+            throw new IllegalStateException(String.format("Invalid status change from %s to %s.", currentStatus, newStatus));
+        }
+    }
+
 
 }

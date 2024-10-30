@@ -22,7 +22,7 @@ public class DeliveryPersonTransformer {
                 .deliveriesCompleted(deliveryPerson.getDeliveriesCompleted())
                 .gmail(deliveryPerson.getGmail())
                 .name(deliveryPerson.getName())
-                .rating(deliveryPerson.getRating())
+                .rating(deliveryPerson.getAverageRating())
                                      .build();
     }
 }

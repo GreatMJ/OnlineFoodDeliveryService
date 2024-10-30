@@ -1,10 +1,17 @@
 package com.example.OnlineFoodDeliveryService.service;
 
+import com.example.OnlineFoodDeliveryService.dto.request.DeliveryPersonRatingRequest;
 import com.example.OnlineFoodDeliveryService.dto.request.DeliveryPersonRequest;
 import com.example.OnlineFoodDeliveryService.dto.response.DeliveryPersonResponse;
 import com.example.OnlineFoodDeliveryService.exceptions.ResourceNotFoundException;
+import com.example.OnlineFoodDeliveryService.models.Customer;
+import com.example.OnlineFoodDeliveryService.models.Delivery;
 import com.example.OnlineFoodDeliveryService.models.DeliveryPerson;
+
+import com.example.OnlineFoodDeliveryService.repository.CustomerRepository;
 import com.example.OnlineFoodDeliveryService.repository.DeliveryPersonRepository;
+
+import com.example.OnlineFoodDeliveryService.repository.DeliveryRepository;
 import com.example.OnlineFoodDeliveryService.transformer.DeliveryPersonTransformer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,6 +25,8 @@ import java.util.List;
 public class DeliveryPersonService {
 
     private  final DeliveryPersonRepository deliveryPersonRepository;
+    private final CustomerRepository customerRepository;
+    private final DeliveryRepository deliveryRepository;
 
     // add delivery person
     public String addDeliveryPerson(DeliveryPersonRequest deliveryPersonRequest){
@@ -45,6 +54,7 @@ public class DeliveryPersonService {
         return deliveryPersonResponse;
     }
 
+    // get All delivery persons
     public List<DeliveryPersonResponse> getAllDeliveryPersons(){
         // fetch
         List<DeliveryPerson> deliveryPersonList=deliveryPersonRepository.findAll();
@@ -59,7 +69,19 @@ public class DeliveryPersonService {
             DeliveryPersonResponse deliveryPersonResponse=DeliveryPersonTransformer.entityToResponse(deliveryPerson);
             deliveryPersonResponseList.add(deliveryPersonResponse);
         }
-
         return deliveryPersonResponseList;
     }
+
+
+    //////////////////////////////////////
+    // DELIVERY PERSON RATING METHOD IS IN PROCESS
+    // give rating to delivery person
+
+//    public String giveRatingToDeliveryPerson(int id, DeliveryPersonRatingRequest ratingRequest){
+//        // first check customer
+//        Customer ratingCustomer=customerRepository.findById(ratingRequest.getCustomerId()).orElseThrow(()->new ResourceNotFoundException("Customer not found."));
+//        // check if order exist
+//        Delivery delivery=deliveryRepository.findById(ratingRequest.getDeliveryId()).orElseThrow(()->new ResourceNotFoundException("Delivery not found."));
+//        //check if the delivery is associated with delivery person
+//    };
 }

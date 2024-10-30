@@ -56,7 +56,6 @@ public class OrderService {
 
       // save the order
       orderRepository.save(order);
-
       return "Order placed successfully!";
   }
 

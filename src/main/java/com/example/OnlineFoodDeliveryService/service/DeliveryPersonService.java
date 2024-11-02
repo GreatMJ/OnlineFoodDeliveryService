@@ -77,11 +77,35 @@ public class DeliveryPersonService {
     // DELIVERY PERSON RATING METHOD IS IN PROCESS
     // give rating to delivery person
 
-//    public String giveRatingToDeliveryPerson(int id, DeliveryPersonRatingRequest ratingRequest){
-//        // first check customer
-//        Customer ratingCustomer=customerRepository.findById(ratingRequest.getCustomerId()).orElseThrow(()->new ResourceNotFoundException("Customer not found."));
-//        // check if order exist
-//        Delivery delivery=deliveryRepository.findById(ratingRequest.getDeliveryId()).orElseThrow(()->new ResourceNotFoundException("Delivery not found."));
-//        //check if the delivery is associated with delivery person
-//    };
+    public String giveRatingToDeliveryPerson(int id, DeliveryPersonRatingRequest ratingRequest){
+        // first check customer
+        Customer Customer=customerRepository.findById(ratingRequest.getCustomerId()).orElseThrow(()->new ResourceNotFoundException("Customer not found."));
+        // check if order exist
+        Delivery delivery=deliveryRepository.findById(ratingRequest.getDeliveryId()).orElseThrow(()->new ResourceNotFoundException("Delivery not found."));
+      if(delivery.isHasGotRatings()) throw new IllegalStateException("Delivery has already been rated.");
+        // fetch the delivery person
+        DeliveryPerson deliveryPerson=deliveryPersonRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Delivery person not found with id: "+id+"."));
+        //check if the delivery is associated with delivery person
+        if(delivery.getDeliveryPerson().getId()!=id) throw new IllegalArgumentException(id+"is not of the delivery person who is actually associated with this delivery. Verify it try again.");
+        // calculate rating
+        calculateAndUpdateRating(deliveryPerson,ratingRequest.getRating());
+        // update delivery
+        delivery.setHasGotRatings(true);
+        deliveryRepository.save(delivery);
+        // save delivery person
+     //   deliveryPersonRepository.save(deliveryPerson);
+        return "Your ratings  submitted successfully. Thank you!";
+    };
+
+    // method to calculate rating
+    private void calculateAndUpdateRating(DeliveryPerson deliveryPerson,int rating){
+        // calculate
+        long ratingCount=deliveryPerson.getRatingCount()+1;
+        long ratingSum= deliveryPerson.getRatingSum()+rating;
+        float averageRating=ratingSum/ratingCount;
+        // update
+        deliveryPerson.setRatingCount(ratingCount);
+        deliveryPerson.setRatingSum(ratingSum);
+        deliveryPerson.setAverageRating(averageRating);
+    }
 }

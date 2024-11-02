@@ -11,6 +11,6 @@ import java.util.UUID;
 public class DeliveryPersonRatingRequest {
 
     int customerId;
-    int deliveryId;
+    UUID deliveryId;
     int rating;
 }

@@ -37,4 +37,6 @@ public class Delivery {
     LocalDateTime deliveryTime;
 
 
+    boolean hasGotRatings;
+
 }

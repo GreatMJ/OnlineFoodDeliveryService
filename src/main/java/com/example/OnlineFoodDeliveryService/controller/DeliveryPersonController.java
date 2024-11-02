@@ -1,5 +1,6 @@
 package com.example.OnlineFoodDeliveryService.controller;
 
+import com.example.OnlineFoodDeliveryService.dto.request.DeliveryPersonRatingRequest;
 import com.example.OnlineFoodDeliveryService.dto.request.DeliveryPersonRequest;
 import com.example.OnlineFoodDeliveryService.dto.response.DeliveryPersonResponse;
 import com.example.OnlineFoodDeliveryService.service.DeliveryPersonService;
@@ -39,5 +40,11 @@ public class DeliveryPersonController {
         if(deliveryPersonResponseList.isEmpty()) return ResponseEntity.ok("No delivery person found.");
 
         return ResponseEntity.ok(deliveryPersonResponseList);
+    }
+
+    @PatchMapping("/{id}/rating")
+    public ResponseEntity<String> giveRating(@PathVariable int id, @RequestBody DeliveryPersonRatingRequest ratingRequest){
+        String res=deliveryPersonService.giveRatingToDeliveryPerson(id,ratingRequest);
+        return ResponseEntity.ok(res);
     }
 }

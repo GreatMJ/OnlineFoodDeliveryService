@@ -4,8 +4,10 @@ import com.example.OnlineFoodDeliveryService.dto.request.DeliveryPersonRatingReq
 import com.example.OnlineFoodDeliveryService.dto.request.DeliveryPersonRequest;
 import com.example.OnlineFoodDeliveryService.dto.response.DeliveryPersonResponse;
 import com.example.OnlineFoodDeliveryService.service.DeliveryPersonService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -43,7 +45,7 @@ public class DeliveryPersonController {
     }
 
     @PatchMapping("/{id}/rating")
-    public ResponseEntity<String> giveRating(@PathVariable int id, @RequestBody DeliveryPersonRatingRequest ratingRequest){
+    public ResponseEntity<String> giveRating(@PathVariable int id,@Valid @RequestBody DeliveryPersonRatingRequest ratingRequest){
         String res=deliveryPersonService.giveRatingToDeliveryPerson(id,ratingRequest);
         return ResponseEntity.ok(res);
     }

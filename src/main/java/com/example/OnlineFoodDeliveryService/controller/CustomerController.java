@@ -6,15 +6,22 @@ import com.example.OnlineFoodDeliveryService.dto.response.OrderResponse;
 import com.example.OnlineFoodDeliveryService.exceptions.ResourceNotFoundException;
 import com.example.OnlineFoodDeliveryService.service.CustomerService;
 import com.example.OnlineFoodDeliveryService.service.OrderService;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/customer")
+@Validated
 @RequiredArgsConstructor
 public class CustomerController {
 
@@ -22,7 +29,7 @@ public class CustomerController {
     private final OrderService orderService;
 
     @PostMapping
-    public ResponseEntity<String> addCustomer(@RequestBody CustomerRequest customerRequest){
+    public ResponseEntity<String> addCustomer(@Valid @RequestBody CustomerRequest customerRequest){
 
            String res=customerService.addCustomer(customerRequest);
            return new ResponseEntity<>(res,
@@ -31,7 +38,7 @@ public class CustomerController {
     }
 
     @DeleteMapping
-    public ResponseEntity<String> deleteCustomer(@RequestParam String gmail){
+    public ResponseEntity<String> deleteCustomer( @RequestParam @NotBlank @Email String gmail){
 
             String res=customerService.deleteCustomer(gmail);
             return ResponseEntity.ok(res);
@@ -39,7 +46,7 @@ public class CustomerController {
     }
 
     @GetMapping("/{id}/orders")
-    public  ResponseEntity<?> getCustomerOrders(@PathVariable int id){
+    public  ResponseEntity<?> getCustomerOrders(@PathVariable  int id){
         List<OrderResponse> orderResponseList=orderService.getCustomerOrders(id);
 
         if(orderResponseList.isEmpty()) return ResponseEntity.ok("Customer hasn't placed any order yet.");
